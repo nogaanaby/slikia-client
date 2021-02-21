@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { example,login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -21,16 +21,31 @@ const mutations = {
 }
 
 const actions = {
-  // user login
-  login({ commit }, userInfo) {
-    const { userName, password } = userInfo
+  example({ commit }) {
+    //debugger
     return new Promise((resolve, reject) => {
-      login({ userName: userName.trim(), password: password }).then(response => {
+      example().then(response => {
+        console.log("from store: ", response)
+        commit('SET_USER_NAME', response.useName)
+        commit('SET_USER_TYPE', response.useType)
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  // user logink
+  login({ commit }, userInfo) {
+    const { username, password } = userInfo
+    return new Promise((resolve, reject) => {
+      login({ userName: username.trim(), password: password }).then(response => {
+        console.log(response)
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         resolve()
       }).catch(error => {
+        console.log("error from store")
         reject(error)
       })
     })

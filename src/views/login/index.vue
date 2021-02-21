@@ -61,6 +61,7 @@
           Or connect with
         </el-button>
       </div>
+      <p>{{connection}}</p>
     </el-form>
 
     <el-dialog title="Or connect with" :visible.sync="showDialog">
@@ -82,11 +83,11 @@ export default {
   components: { SocialSign },
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
+      // if (!validUsername(value)) {
+      //   callback(new Error('Please enter the correct user name'))
+      // } else {
         callback()
-      }
+      //}
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
@@ -97,8 +98,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: 'noam',
+        password: 'noamslikia'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -109,7 +110,8 @@ export default {
       loading: false,
       showDialog: false,
       redirect: undefined,
-      otherQuery: {}
+      otherQuery: {},
+      connection:""
     }
   },
   watch: {
@@ -128,6 +130,14 @@ export default {
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
+
+    this.$store.dispatch('user/example')
+    .then((data) => {
+      debugger
+      this.connection=data
+      console.log(data);
+    })
+
     if (this.loginForm.username === '') {
       this.$refs.username.focus()
     } else if (this.loginForm.password === '') {
@@ -156,8 +166,11 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
+          //Call the user module red login
+          console.log("Click the login button")         
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
+              console.log("Login successful");        
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })
