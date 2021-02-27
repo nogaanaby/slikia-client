@@ -1,108 +1,62 @@
 <template>
   <div class="dashboard-container">
-
-    <p>{{ this.currentRole }}</p>
-
-    <el-card class="box-card">
-      <el-table
-        align="right"
-        stripe
-        :data="tableData"
-        style="width: 100%"
-      >
-        <el-table-column
-          v-if="this.currentRole=='adminDashboard'"
-          align="right"
-          label="עריכה"
-          width="300"
-        >
-          <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" circle />
-            <el-button type="danger" icon="el-icon-delete" circle />
-          </template>
-        </el-table-column>
-
-        <el-table-column
-          sortable
-          align="right"
-          prop="quantity"
-          label="כמות"
-        />
-        <el-table-column
-          align="right"
-          prop="product"
-          label="מוצר"
-        />
-        <el-table-column
-          align="right"
-          prop="citizen_name"
-          label="שם תושב"
-        />
-        <el-table-column
-          align="right"
-          prop="citizen_id"
-          label="מספר תושב"
-        />
-        <el-table-column
-          align="right"
-          sortable
-          prop="datime"
-          label="זמן"
-        />
-      </el-table>
-    </el-card>
-    <!-- <component :is="currentRole" /> -->
+    <SlikiaTable 
+    :userType="userType" 
+    :tableData.sync="tableData"
+    :tableFields.sync="tableFields"
+    />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import adminDashboard from './admin'
-import editorDashboard from './editor'
-import store from '../../store'
+import SlikiaTable from '@/components/SlikiaTable'
 
 export default {
   name: 'Citizens',
-  components: { adminDashboard, editorDashboard },
+  components: { SlikiaTable },
+  
   data() {
     return {
-      currentRole: 'adminDashboard',
-      tableData: []
+      tableData: [],
+      tableFields: []
     }
   },
   computed: {
     ...mapGetters([
-      'roles'
+      'roles',
+      'userType'
     ])
   },
-  created() {
-    if (!this.roles.includes('admin')) {
-      this.currentRole = 'editorDashboard'
-    }
+  watch: {
 
+  },
+  created() {
     // axios and get the data from the server
+
+    this.tableFields = [
+      {
+        name:"created_at",
+        title: 'זמן',
+        sortable: true
+      },
+      {
+        name:"citizen_id",
+        title: 'מספר תושב',
+        sortable: true
+      },
+      {
+        name:"citizen_name",
+        title: 'שם תושב',
+        sortable: true
+      }
+    ]
 
     this.tableData = [
       {
-        datime: '2016-05-03 16:34:09',
-        citizen_name: 'יאיר',
-        citizen_id: '008997',
-        product: 'בירה גולדסטאר',
-        quantity: '2'
-      },
-      {
-        datime: '2016-09-03 16:34:09',
-        citizen_name: 'יאיר',
-        citizen_id: '008997',
-        product: 'בירה גולדסטאר',
-        quantity: '2'
-      },
-      {
-        datime: '2016-08-03 16:34:09',
-        citizen_name: 'יאיר',
-        citizen_id: '008997',
-        product: 'בירה גולדסטאר',
-        quantity: '2'
+        created_at: '2016-05-03 16:34:09',
+        citizen_name: 'משה',
+        citizen_id: '46464646',
       }
     ]
   }

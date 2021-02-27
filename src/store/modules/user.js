@@ -35,6 +35,7 @@ const actions = {
   },
   // user logink
   login({ commit }, userInfo) {
+    alert("its on login funciton")
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ userName: username.trim(), password: password }).then(response => {

@@ -1,54 +1,68 @@
 <template>
-  <div class="dashboard-container" />
+  <div class="dashboard-container">
+    <SlikiaTable 
+    :userType="userType" 
+    :tableData.sync="tableData"
+    :tableFields.sync="tableFields"
+    />
+  </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import adminDashboard from './admin'
-import editorDashboard from './editor'
+import SlikiaTable from '@/components/SlikiaTable'
 
 export default {
   name: 'Products',
-  components: { adminDashboard, editorDashboard },
+  components: { SlikiaTable },
+  
   data() {
     return {
-      currentRole: 'adminDashboard',
-      tableData: []
+      tableData: [],
+      tableFields: []
     }
   },
   computed: {
     ...mapGetters([
-      'roles'
+      'roles',
+      'userType'
     ])
   },
-  created() {
-    if (!this.roles.includes('admin')) {
-      this.currentRole = 'editorDashboard'
-    }
+  watch: {
 
+  },
+  created() {
     // axios and get the data from the server
+
+    this.tableFields = [
+      {
+        name:"created_at",
+        title: 'זמן',
+        sortable: true
+      },
+      {
+        name:"product_id",
+        title: 'מספר מוצר',
+        sortable: true
+      },
+      {
+        name:"product_name",
+        title: 'שם מוצר',
+        sortable: true
+      },
+      {
+        name:"quantity",
+        title: 'כמות',
+        sortable: true
+      }
+    ]
 
     this.tableData = [
       {
-        datime: '2016-05-03 16:34:09',
-        citizen_name: 'יאיר',
-        citizen_id: '008997',
-        product: 'בירה גולדסטאר',
-        quantity: '2'
-      },
-      {
-        datime: '2016-09-03 16:34:09',
-        citizen_name: 'יאיר',
-        citizen_id: '008997',
-        product: 'בירה גולדסטאר',
-        quantity: '2'
-      },
-      {
-        datime: '2016-08-03 16:34:09',
-        citizen_name: 'יאיר',
-        citizen_id: '008997',
-        product: 'בירה גולדסטאר',
-        quantity: '2'
+        created_at: '2016-05-03 16:34:09',
+        product_id: '556446',
+        product_name: 'בירה שחורה',
+        quantity:'40'
       }
     ]
   }

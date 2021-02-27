@@ -20,13 +20,17 @@ router.beforeEach(async(to, from, next) => {
   const hasToken = getToken()
 
   if (hasToken) {
+    const accessRoutes = await store.dispatch('permission/generateRoutes')
+    // dynamically add accessible routes
+    router.addRoutes(accessRoutes)
+
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done() // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
     } else {
       next()
-      }
+    }
 
   } else {
     /* has no token*/
