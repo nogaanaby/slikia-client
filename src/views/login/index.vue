@@ -130,11 +130,11 @@ export default {
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
-    this.$store.dispatch('user/example')
-      .then((data) => {
-        this.connection = data.userName
-        console.log(data)
-      })
+    // this.$store.dispatch('user/example')
+    //   .then((data) => {
+    //     this.connection = data.userName
+    //     console.log(data)
+    //   })
 
     if (this.loginForm.username === '') {
       this.$refs.username.focus()
