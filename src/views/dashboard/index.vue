@@ -80,7 +80,7 @@ export default {
     ])
   },
   created() {
-    if (!this.roles.includes('admin')) {
+    if (this.roles.userType !== 'admin') {
       this.currentRole = 'editorDashboard'
     }
 

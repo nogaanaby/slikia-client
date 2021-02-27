@@ -1,4 +1,4 @@
-import { example,login, logout, getInfo } from '@/api/user'
+import { example, login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -22,12 +22,11 @@ const mutations = {
 
 const actions = {
   example({ commit }) {
-    //debugger
     return new Promise((resolve, reject) => {
       example().then(response => {
-        console.log("from store: ", response)
-        commit('SET_USER_NAME', response.useName)
-        commit('SET_USER_TYPE', response.useType)
+        console.log('from store: ', response)
+      //  commit('SET_USER_NAME', response.useName)
+      //  commit('SET_USER_TYPE', response.useType)
         resolve(response)
       }).catch(error => {
         reject(error)
@@ -40,44 +39,46 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ userName: username.trim(), password: password }).then(response => {
         console.log(response)
-        const { data } = response
+        const data = response
+        commit('SET_USER_NAME', data.useName)
+        commit('SET_USER_TYPE', data.useType)
         commit('SET_TOKEN', data.token)
         setToken(data.token)
-        resolve()
+        resolve(data)
       }).catch(error => {
-        console.log("error from store")
+        console.log('error from store')
         reject(error)
       })
     })
   },
 
-  // // get user info
-  // getInfo({ commit, state }) {
-  //   return new Promise((resolve, reject) => {
-  //     getInfo(state.token).then(response => {
-  //       const { data } = response
+  // get user info
+  getInfo({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      getInfo(state.token).then(response => {
+        const { data } = response
 
-  //       if (!data) {
-  //         reject('Verification failed, please Login again.')
-  //       }
+        if (!data) {
+          reject('Verification failed, please Login again.')
+        }
 
-  //       const { roles, name, avatar, introduction } = data
+        const { roles, name, avatar, introduction } = data
 
-  //       // roles must be a non-empty array
-  //       if (!roles || roles.length <= 0) {
-  //         reject('getInfo: roles must be a non-null array!')
-  //       }
+        // roles must be a non-empty array
+        if (!roles || roles.length <= 0) {
+          reject('getInfo: roles must be a non-null array!')
+        }
 
-  //       commit('SET_ROLES', roles)
-  //       commit('SET_NAME', name)
-  //       commit('SET_AVATAR', avatar)
-  //       commit('SET_INTRODUCTION', introduction)
-  //       resolve(data)
-  //     }).catch(error => {
-  //       reject(error)
-  //     })
-  //   })
-  // },
+        commit('SET_ROLES', roles)
+        commit('SET_NAME', name)
+        commit('SET_AVATAR', avatar)
+        commit('SET_INTRODUCTION', introduction)
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
 
   // user logout
   logout({ commit, state, dispatch }) {
@@ -97,37 +98,37 @@ const actions = {
         reject(error)
       })
     })
+  },
+
+  // remove token
+  resetToken({ commit }) {
+    return new Promise(resolve => {
+      commit('SET_TOKEN', '')
+      commit('SET_ROLES', [])
+      removeToken()
+      resolve()
+    })
+  },
+
+  // dynamically modify permissions
+  async changeRoles({ commit, dispatch }, role) {
+    const token = role + '-token'
+
+    commit('SET_TOKEN', token)
+    setToken(token)
+
+    const { roles } = await dispatch('getInfo')
+
+    resetRouter()
+
+    // generate accessible routes map based on roles
+    const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
+    // dynamically add accessible routes
+    router.addRoutes(accessRoutes)
+
+    // reset visited views and cached views
+    dispatch('tagsView/delAllViews', null, { root: true })
   }
-
-  // // remove token
-  // resetToken({ commit }) {
-  //   return new Promise(resolve => {
-  //     commit('SET_TOKEN', '')
-  //     commit('SET_ROLES', [])
-  //     removeToken()
-  //     resolve()
-  //   })
-  // },
-
-  // // dynamically modify permissions
-  // async changeRoles({ commit, dispatch }, role) {
-  //   const token = role + '-token'
-
-  //   commit('SET_TOKEN', token)
-  //   setToken(token)
-
-  //   const { roles } = await dispatch('getInfo')
-
-  //   resetRouter()
-
-  //   // generate accessible routes map based on roles
-  //   const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
-  //   // dynamically add accessible routes
-  //   router.addRoutes(accessRoutes)
-
-  //   // reset visited views and cached views
-  //   dispatch('tagsView/delAllViews', null, { root: true })
-  // }
 }
 
 export default {

@@ -8,13 +8,12 @@ export function login(data) {
   })
 }
 
-export function example(){
-  //debugger
+export function example() {
   return request({
     url: 'api/user/1',
     method: 'get'
   })
- }
+}
 
 // export function getInfo(token) {
 //   return request({

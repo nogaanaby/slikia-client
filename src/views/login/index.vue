@@ -61,7 +61,7 @@
           Or connect with
         </el-button>
       </div>
-      <p>{{connection}}</p>
+      <p>{{ connection }}</p>
     </el-form>
 
     <el-dialog title="Or connect with" :visible.sync="showDialog">
@@ -86,8 +86,8 @@ export default {
       // if (!validUsername(value)) {
       //   callback(new Error('Please enter the correct user name'))
       // } else {
-        callback()
-      //}
+      callback()
+      // }
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
@@ -111,7 +111,7 @@ export default {
       showDialog: false,
       redirect: undefined,
       otherQuery: {},
-      connection:""
+      connection: ''
     }
   },
   watch: {
@@ -130,13 +130,11 @@ export default {
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
-
     this.$store.dispatch('user/example')
-    .then((data) => {
-      debugger
-      this.connection=data
-      console.log(data);
-    })
+      .then((data) => {
+        this.connection = data.userName
+        console.log(data)
+      })
 
     if (this.loginForm.username === '') {
       this.$refs.username.focus()
@@ -166,11 +164,12 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          //Call the user module red login
-          console.log("Click the login button")         
+          // Call the user module red login
+          console.log('Click the login button')
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
-              console.log("Login successful");        
+              debugger
+              console.log('Login successful')
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })
