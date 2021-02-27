@@ -17,7 +17,7 @@ const mutations = {
   },
   SET_USER_TYPE: (state, userType) => {
     state.userType = userType
-  }
+  },
 }
 
 const actions = {
@@ -25,8 +25,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       example().then(response => {
         console.log('from store: ', response)
-      //  commit('SET_USER_NAME', response.useName)
-      //  commit('SET_USER_TYPE', response.useType)
+        //  commit('SET_USER_NAME', response.useName)
+        //  commit('SET_USER_TYPE', response.useType)
         resolve(response)
       }).catch(error => {
         reject(error)
@@ -62,17 +62,17 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        const { roles, name, avatar, introduction } = data
+        const { userType, userName} = data
 
         // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
+        // if (!roles || roles.length <= 0) {
+        //   reject('getInfo: roles must be a non-null array!')
+        // }
 
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
+        //commit('SET_ROLE', role)
+        //commit('SET_NAME', name)
+        //commit('SET_AVATAR', avatar)
+        //commit('SET_INTRODUCTION', introduction)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -85,7 +85,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
+        //commit('SET_ROLES', [])
         removeToken()
         resetRouter()
 
@@ -104,31 +104,31 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
-      commit('SET_ROLES', [])
+      //commit('SET_ROLES', [])
       removeToken()
       resolve()
     })
   },
 
   // dynamically modify permissions
-  async changeRoles({ commit, dispatch }, role) {
-    const token = role + '-token'
+  // async changeRoles({ commit, dispatch }, role) {
+  //   const token = role + '-token'
 
-    commit('SET_TOKEN', token)
-    setToken(token)
+  //   commit('SET_TOKEN', token)
+  //   setToken(token)
 
-    const { roles } = await dispatch('getInfo')
+  //   const { roles } = await dispatch('getInfo')
 
-    resetRouter()
+  //   resetRouter()
 
-    // generate accessible routes map based on roles
-    const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
-    // dynamically add accessible routes
-    router.addRoutes(accessRoutes)
+  //   // generate accessible routes map based on roles
+  //   const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
+  //   // dynamically add accessible routes
+  //   router.addRoutes(accessRoutes)
 
-    // reset visited views and cached views
-    dispatch('tagsView/delAllViews', null, { root: true })
-  }
+  //   // reset visited views and cached views
+  //   dispatch('tagsView/delAllViews', null, { root: true })
+  // }
 }
 
 export default {

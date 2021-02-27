@@ -168,7 +168,6 @@ export default {
           console.log('Click the login button')
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
-              debugger
               console.log('Login successful')
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
