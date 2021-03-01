@@ -35,11 +35,9 @@ const actions = {
   },
   // user logink
   login({ commit }, userInfo) {
-    alert("its on login funciton")
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ userName: username.trim(), password: password }).then(response => {
-        //debugger
         console.log(response)
         const data = response
         commit('SET_USER_NAME', data.userName)
@@ -55,31 +53,28 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
-
-        const { userType, userName} = data
-
-        // roles must be a non-empty array
-        // if (!roles || roles.length <= 0) {
-        //   reject('getInfo: roles must be a non-null array!')
-        // }
-
-        //commit('SET_ROLE', role)
-        //commit('SET_NAME', name)
-        //commit('SET_AVATAR', avatar)
-        //commit('SET_INTRODUCTION', introduction)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
+  getInfo({ commit, state, dispatch }) {
+    if(state.userType=='' || state.userName==''){
+      return new Promise((resolve, reject) => {
+          getInfo(state.token).then(response => {
+            const data= response
+            if (!data) {
+              alert("no info here")
+              dispatch('user/logout');
+              resolve()
+            }
+            console.log(response)
+            commit('SET_USER_NAME', data.userName)
+            commit('SET_USER_TYPE', data.userType)
+            resolve(data)
+          }).catch(error => {
+            reject(error)
+          })
+        
       })
-    })
+    }else{
+      return state
+    }
   },
 
   // user logout

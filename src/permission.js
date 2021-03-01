@@ -20,17 +20,27 @@ router.beforeEach(async(to, from, next) => {
   const hasToken = getToken()
 
   if (hasToken) {
-    const accessRoutes = await store.dispatch('permission/generateRoutes')
-    // dynamically add accessible routes
-    router.addRoutes(accessRoutes)
-
-    if (to.path === '/login') {
-      // if is logged in, redirect to the home page
-      next({ path: '/' })
-      NProgress.done() // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
-    } else {
-      next()
+    try{
+      const user = await store.dispatch('user/getInfo')
+      const accessRoutes = await store.dispatch('permission/generateRoutes')
+      // dynamically add accessible routes
+      router.addRoutes(accessRoutes)
+  
+      if (to.path === '/login') {
+        // if is logged in, redirect to the home page
+        next({ path: '/' })
+        NProgress.done() // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
+      } else {
+        next()
+      }
+    } catch (error) {
+          // remove token and go to login page to re-login
+          await store.dispatch('user/resetToken')
+          Message.error(error || 'Has Error')
+          next(`/login?redirect=${to.path}`)
+          NProgress.done()
     }
+
 
   } else {
     /* has no token*/

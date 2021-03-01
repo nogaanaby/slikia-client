@@ -7,6 +7,7 @@
         align="right"
         stripe
         :data="tableData"
+        border
         style="width: 100%"
       >
 
@@ -17,8 +18,8 @@
           width="300"
         >
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" circle />
-            <el-button type="danger" icon="el-icon-delete" circle />
+            <el-button type="primary" icon="el-icon-edit" circle @click="editItem(scope.$index)"/>
+            <el-button type="danger" icon="el-icon-delete" circle @click="deleteItem(scope.$index)"/>
           </template>
         </el-table-column>
 
@@ -33,8 +34,8 @@
     </el-card>
 
     <div class="actions">
-      <el-button type="primary" icon="el-icon-plus" circle />
-      <el-button type="primary" plain icon="el-icon-download" circle />
+      <el-button type="primary" icon="el-icon-plus" circle @click="addItem"/>
+      <el-button type="primary" plain icon="el-icon-download" circle @click="exportTable"/>
     </div>
   </div>
 </template>
@@ -55,6 +56,16 @@ export default {
 
   },
   methods: {
+    deleteItem(itemIndex) {
+      this.$emit('deleteItem', itemIndex)
+    },
+    editItem(){},
+    exportTable(){
+
+    },
+    addItem(){
+
+    }
 
   }
 }

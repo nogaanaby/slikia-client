@@ -4,6 +4,7 @@
     :userType="userType" 
     :tableData.sync="tableData"
     :tableFields.sync="tableFields"
+    @deleteItem="deleteItem"
     />
   </div>
 </template>
@@ -32,33 +33,70 @@ export default {
 
   },
   created() {
-    // axios and get the data from the server
+    this.$store.dispatch('citizen/getCitizens')
+      .then((data) => {
+        console.log(data)
+        for (let citizen of data){
+          this.tableData.push(citizen)
+        }
+      })
 
     this.tableFields = [
       {
-        name:"created_at",
-        title: 'זמן',
+        name:"lastName",
+        title: 'שם משפחה',
         sortable: true
       },
       {
-        name:"citizen_id",
+        name:"firstName",
+        title: 'שם פרטי',
+        sortable: true
+      },
+      {
+        name:"budgetId",
         title: 'מספר תושב',
         sortable: true
       },
       {
-        name:"citizen_name",
-        title: 'שם תושב',
+        name:"createdAt",
+        title: 'זמן',
         sortable: true
-      }
-    ]
-
-    this.tableData = [
+      },   
       {
-        created_at: '2016-05-03 16:34:09',
-        citizen_name: 'משה',
-        citizen_id: '46464646',
-      }
+        name:"id",
+        title: 'id',
+        sortable: true
+      },
     ]
+  },
+  methods:{
+    deleteItem(itemIndex) {
+      const citizen=this.tableData[itemIndex]
+      const citizenName=citizen.firstName+' '+citizen.lastName
+      const citizenId=citizen.id
+
+      this.$confirm(` האם אתה בטוח שאתה רוצה למחוק את התושב ${citizenName}?`, 'Warning', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+          this.$store.dispatch('citizen/deleteCitizen',citizenId)
+          .then((newCitizensTable) => {
+            this.tableData=newCitizensTable
+              this.$forceUpdate();
+              this.$message({
+                type: 'success',
+                message: 'Delete completed'
+              });
+          })
+
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Delete canceled'
+        });          
+      });
+      }
   }
 }
 </script>

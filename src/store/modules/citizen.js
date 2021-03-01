@@ -1,4 +1,4 @@
-import { getCitizens, getCitizen } from '@/api/citizen'
+import { getCitizens, getCitizen,createCitizen,deleteCitizen,editCitizen } from '@/api/citizen'
 // import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -6,7 +6,8 @@ const state = {
   id: 0,
   firstName: '',
   lastName: '',
-  budgetId: 0
+  budgetId: 0,
+  citizens:[]
 }
 
 const mutations = {
@@ -18,6 +19,12 @@ const mutations = {
   },
   SET_BUDGET_ID: (state, budgetId) => {
     state.budgetId = budgetId
+  },
+  SET_CITIZENS:(state, citizens)=>{
+    state.citizens = citizens
+  },
+  DELETE_CITIZEN:(state, citizenId)=>{
+    state.citizens=state.citizens.filter((citizen)=>citizen.id!=citizenId)
   }
 }
 
@@ -44,30 +51,36 @@ const actions = {
   },
   getCitizens({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getCitizens(state.token).then(response => {
-        const { data } = response
+      getCitizens().then(response => {
+        const data = response
 
         if (!data) {
-          reject('Verification failed, please Login again.')
+          reject('no citizens or internet connection')
         }
 
-        // const { roles, name, avatar, introduction } = data
-
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
-
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
+        commit('SET_CITIZENS', data)
         resolve(data)
       }).catch(error => {
         reject(error)
       })
     })
-  }
+  },
+  deleteCitizen({ commit, state }, citizenId) {
+    return new Promise((resolve, reject) => {
+      deleteCitizen(citizenId).then(response => {
+        const data = response
+
+        if (!data || data.status==500) {
+          reject('could not delete citizen')
+        }
+
+        commit('DELETE_CITIZEN', citizenId)
+        resolve(state.citizens)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
 
 }
 

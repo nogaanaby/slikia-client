@@ -88,7 +88,7 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'citizens',
+        path: 'index',
         component: () => import('@/views/dashboard/citizens'),
         name: 'Citizens',
         meta: { title: 'Citizens', icon: 'user', affix: true }
@@ -100,7 +100,7 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'products',
+        path: 'index',
         component: () => import('@/views/dashboard/products'),
         name: 'Products',
         meta: { title: 'Products', icon: 'el-icon-goods', affix: true }
