@@ -1,4 +1,4 @@
-import { getCitizens, getCitizen,createCitizen,deleteCitizen,editCitizen } from '@/api/citizen'
+import { getCitizens, getCitizen, createCitizen, deleteCitizen, editCitizen } from '@/api/citizen'
 // import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -7,7 +7,7 @@ const state = {
   firstName: '',
   lastName: '',
   budgetId: 0,
-  citizens:[]
+  citizens: []
 }
 
 const mutations = {
@@ -20,11 +20,11 @@ const mutations = {
   SET_BUDGET_ID: (state, budgetId) => {
     state.budgetId = budgetId
   },
-  SET_CITIZENS:(state, citizens)=>{
+  SET_CITIZENS: (state, citizens) => {
     state.citizens = citizens
   },
-  DELETE_CITIZEN:(state, citizenId)=>{
-    state.citizens=state.citizens.filter((citizen)=>citizen.id!=citizenId)
+  DELETE_CITIZEN: (state, citizenId) => {
+    state.citizens = state.citizens.filter((citizen) => citizen.id != citizenId)
   }
 }
 
@@ -70,7 +70,7 @@ const actions = {
       deleteCitizen(citizenId).then(response => {
         const data = response
 
-        if (!data || data.status==500) {
+        if (!data || data.status == 500) {
           reject('could not delete citizen')
         }
 
@@ -80,7 +80,7 @@ const actions = {
         reject(error)
       })
     })
-  },
+  }
 
 }
 

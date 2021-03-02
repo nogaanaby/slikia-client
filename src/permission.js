@@ -20,12 +20,12 @@ router.beforeEach(async(to, from, next) => {
   const hasToken = getToken()
 
   if (hasToken) {
-    try{
+    try {
       const user = await store.dispatch('user/getInfo')
       const accessRoutes = await store.dispatch('permission/generateRoutes')
       // dynamically add accessible routes
       router.addRoutes(accessRoutes)
-  
+
       if (to.path === '/login') {
         // if is logged in, redirect to the home page
         next({ path: '/' })
@@ -34,14 +34,12 @@ router.beforeEach(async(to, from, next) => {
         next()
       }
     } catch (error) {
-          // remove token and go to login page to re-login
-          await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
-          next(`/login?redirect=${to.path}`)
-          NProgress.done()
+      // remove token and go to login page to re-login
+      await store.dispatch('user/resetToken')
+      Message.error(error || 'Has Error')
+      next(`/login?redirect=${to.path}`)
+      NProgress.done()
     }
-
-
   } else {
     /* has no token*/
     if (whiteList.indexOf(to.path) !== -1) {
@@ -53,7 +51,6 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     }
   }
-
 })
 
 router.afterEach(() => {

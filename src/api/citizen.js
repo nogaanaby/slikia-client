@@ -31,7 +31,7 @@ export function deleteCitizen(id) {
   })
 }
 
-export function editCitizen(id,data) {
+export function editCitizen(id, data) {
   return request({
     url: `/api/citizens/${id}`,
     method: 'put',

@@ -17,7 +17,7 @@ const mutations = {
   },
   SET_USER_TYPE: (state, userType) => {
     state.userType = userType
-  },
+  }
 }
 
 const actions = {
@@ -54,25 +54,24 @@ const actions = {
 
   // get user info
   getInfo({ commit, state, dispatch }) {
-    if(state.userType=='' || state.userName==''){
+    if (state.userType == '' || state.userName == '') {
       return new Promise((resolve, reject) => {
-          getInfo(state.token).then(response => {
-            const data= response
-            if (!data) {
-              alert("no info here")
-              dispatch('user/logout');
-              resolve()
-            }
-            console.log(response)
-            commit('SET_USER_NAME', data.userName)
-            commit('SET_USER_TYPE', data.userType)
-            resolve(data)
-          }).catch(error => {
-            reject(error)
-          })
-        
+        getInfo(state.token).then(response => {
+          const data = response
+          if (!data) {
+            alert('no info here')
+            dispatch('user/logout')
+            resolve()
+          }
+          console.log(response)
+          commit('SET_USER_NAME', data.userName)
+          commit('SET_USER_TYPE', data.userType)
+          resolve(data)
+        }).catch(error => {
+          reject(error)
+        })
       })
-    }else{
+    } else {
       return state
     }
   },
@@ -82,7 +81,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
-        //commit('SET_ROLES', [])
+        // commit('SET_ROLES', [])
         removeToken()
         resetRouter()
 
@@ -101,11 +100,11 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
-      //commit('SET_ROLES', [])
+      // commit('SET_ROLES', [])
       removeToken()
       resolve()
     })
-  },
+  }
 
   // dynamically modify permissions
   // async changeRoles({ commit, dispatch }, role) {

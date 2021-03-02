@@ -1,10 +1,10 @@
 <template>
   <div class="dashboard-container">
-    <SlikiaTable 
-    :userType="userType" 
-    :tableData.sync="tableData"
-    :tableFields.sync="tableFields"
-    @deleteItem="deleteItem"
+    <SlikiaTable
+      :user-type="userType"
+      :table-data.sync="tableData"
+      :table-fields.sync="tableFields"
+      @deleteItem="deleteItem"
     />
   </div>
 </template>
@@ -16,7 +16,7 @@ import SlikiaTable from '@/components/SlikiaTable'
 export default {
   name: 'Citizens',
   components: { SlikiaTable },
-  
+
   data() {
     return {
       tableData: [],
@@ -36,67 +36,76 @@ export default {
     this.$store.dispatch('citizen/getCitizens')
       .then((data) => {
         console.log(data)
-        for (let citizen of data){
+        for (const citizen of data) {
           this.tableData.push(citizen)
         }
       })
 
     this.tableFields = [
       {
-        name:"lastName",
+        name: 'lastName',
         title: 'שם משפחה',
-        sortable: true
+        sortable: true,
+        editable:true,
+        type: 'text',
+        order: 4
+
       },
       {
-        name:"firstName",
+        name: 'firstName',
         title: 'שם פרטי',
-        sortable: true
+        sortable: true,
+        editable:true,
+        type: 'text',
+        order: 3
       },
       {
-        name:"budgetId",
+        name: 'budgetId',
         title: 'מספר תושב',
-        sortable: true
+        sortable: true,
+        editable:true,
+        type: 'int',
+        order: 2
       },
       {
-        name:"createdAt",
+        name: 'createdAt',
         title: 'זמן',
-        sortable: true
-      },   
-      {
-        name:"id",
-        title: 'id',
-        sortable: true
+        sortable: true,
+        editable:true,
+        type: 'date',
+        order: 1
       },
+      {
+        name: 'id',
+        title: 'id',
+        sortable: true,
+        editable:false,
+        type: 'id',
+        order: 0
+      }
     ]
   },
-  methods:{
+  methods: {
     deleteItem(itemIndex) {
-      const citizen=this.tableData[itemIndex]
-      const citizenName=citizen.firstName+' '+citizen.lastName
-      const citizenId=citizen.id
+      const citizen = this.tableData[itemIndex]
+      const citizenName = citizen.firstName + ' ' + citizen.lastName
+      const citizenId = citizen.id
 
-      this.$confirm(` האם אתה בטוח שאתה רוצה למחוק את התושב ${citizenName}?`, 'Warning', {
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Cancel',
-        type: 'warning'
-      }).then(() => {
-          this.$store.dispatch('citizen/deleteCitizen',citizenId)
+        this.$store.dispatch('citizen/deleteCitizen', citizenId)
           .then((newCitizensTable) => {
-            this.tableData=newCitizensTable
-              this.$forceUpdate();
-              this.$message({
-                type: 'success',
-                message: 'Delete completed'
-              });
+            this.tableData = newCitizensTable
+            this.$forceUpdate()
+            this.$message({
+              type: 'success',
+              message: 'Delete completed'
+            })
+          }).catch((err) => {
+            this.$message({
+              type: 'err',
+              message: err
+            })
           })
-
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: 'Delete canceled'
-        });          
-      });
-      }
+    }
   }
 }
 </script>
